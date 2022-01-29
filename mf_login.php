@@ -35,7 +35,26 @@ function mf_login_admin_init()
     add_settings_field('mf_login_menu', 'Menu to add login button', 'mf_login_menu_input', 'mf-login-settings', 'mf_login_settings');
     add_settings_field('mf_login_profile', 'Edit profile page', 'mf_login_profile_input', 'mf-login-settings', 'mf_login_settings');
     add_settings_field('mf_login_logout', 'Page to redirect after log out', 'mf_login_logout_input', 'mf-login-settings', 'mf_login_settings');
+    add_settings_field('mf_login_register', 'Registration Page', 'mf_login_register_input', 'mf-login-settings', 'mf_login_settings');
 }
+
+function mf_login_register_input(){
+    $settings = get_option('mf_login_settings');
+    $register = $settings['register'];
+    $pages = get_pages(array('post_type' => 'page')); 
+    $html = '<select name="mf_login_settings[register]">'; 
+    $html .= '<option value="">-</option>'; 
+    foreach($pages as $p){
+        $html .= '<option value="'.$p->ID.'"'; 
+        if($register == $p->ID){
+            $html .= ' selected '; 
+        }
+        $html .= '>'.$p->post_title.'</option>'; 
+    }
+    $html .= '</select>'; 
+    echo $html;  
+}
+
 function mf_login_profile_input(){
     $settings = get_option('mf_login_settings');
     $profile = $settings['profile'];
@@ -108,13 +127,17 @@ add_filter('wp_nav_menu_items', 'add_search_form', 10, 2);
 add_action('wp_footer', 'mf_login_model');
 function mf_login_model()
 {
+    $settings = get_option('mf_login_settings');
+    $register = $settings['register']; 
     $redirect = get_permalink(get_the_ID());
     include(plugin_dir_path(__FILE__) . 'views/login_modal.php');
 }
 
-add_shortcode('mf_login', 'my_login_form_func');
-function my_login_form_func($atts)
+add_shortcode('mf_login', 'mf_login_form_func');
+function mf_login_form_func($atts)
 {
+    $settings = get_option('mf_login_settings');
+    $register = $settings['register']; 
     $redirect = get_permalink(get_the_ID());
     ob_start();
     include(plugin_dir_path(__FILE__) . 'views/login_form.php');

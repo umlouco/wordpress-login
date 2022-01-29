@@ -13,5 +13,6 @@
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
     <a class="btn btn-secondary" href="<?php echo wp_lostpassword_url(get_permalink(get_the_ID())); ?>">Forgot Password</a>
+    <a class="btn btn-secondary" href="<?php echo get_permalink($register); ?>">Register</a>
     <input type="hidden" name="redirect_to" value="<?php echo $redirect; ?>" />
 </form>
